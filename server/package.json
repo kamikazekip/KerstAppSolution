@@ -1,0 +1,15 @@
+{
+  "name": "Audio_server_nodejs",
+  "main": "server.js",
+  "version": "0.1.0",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.0.2",
+    "express": "^4.14.0",
+    "socket.io": "^1.5.0",
+    "underscore": "*"
+  }
+}

@@ -1,0 +1,29 @@
+@font-face {
+  font-family: 'ChristmasLightsOutdoor';
+  src: url('../fonts/christmas_lights_outdoor/ChristmasLightsOutdoor.woff') format('woff'),
+       url('../fonts/christmas_lights_outdoor/ChristmasLightsOutdoor.ttf') format('truetype'),
+       url('../fonts/christmas_lights_outdoor/ChristmasLightsOutdoor.svg#SingleSleeve') format('svg'),
+       url('../fonts/christmas_lights_outdoor/ChristmasLightsOutdoor.eot'),
+       url('../fonts/christmas_lights_outdoor/ChristmasLightsOutdoor.woff2') format('woff2'),
+       url('../fonts/christmas_lights_outdoor/ChristmasLightsOutdoor.eot?#iefix') format('embedded-opentype');
+}
+
+.christmasLightsFont {
+	font-family: 'ChristmasLightsOutdoor';
+}
+
+.loader {
+	width: 100%;
+	height:auto;
+	position: fixed;
+	left: 0%;
+	top: 20%;
+	opacity: 1;
+}
+
+.loaderGif {
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	margin: 0; 
+}
