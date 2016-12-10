@@ -11,6 +11,9 @@ socket.on('disconnect', function(){
     socketIsConnected = false;
 });
 
+var colors = { streaming: '#FF0000', off: "blue"}
+var color = colors.streaming;
+
 //Audio
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
 
@@ -54,6 +57,7 @@ function toggleRecording() {
     var micIcon = document.getElementById("record");
     if (micIcon.classList.contains("recording")) {
         // stop recording
+        color = colors.off;
         audioRecorder.stop();
         micIcon.classList.remove("recording");
         audioRecorder.getBuffers( gotBuffers );
@@ -62,6 +66,7 @@ function toggleRecording() {
         // start recording
         if (!audioRecorder)
             return;
+        color = colors.streaming;
         micIcon.classList.add("recording");
         audioRecorder.clear();
         audioRecorder.record();
@@ -103,7 +108,6 @@ function drawCanvas(canvas, context, freqByteData){
         var numBars = Math.round(canvasWidth / SPACING);
 
         context.clearRect(0, 0, canvasWidth, canvasHeight);
-        context.fillStyle = '#F6D565';
         context.lineCap = 'round';
         var multiplier = analyserNode.frequencyBinCount / numBars;
 
@@ -116,7 +120,7 @@ function drawCanvas(canvas, context, freqByteData){
                 magnitude += freqByteData[offset + j];
             magnitude = magnitude / multiplier;
             var magnitude2 = freqByteData[i * multiplier];
-            context.fillStyle = "#ff0000"//"hsl( " + Math.round((i*360)/numBars) + ", 100%, 50%)";
+            context.fillStyle = color//"hsl( " + Math.round((i*360)/numBars) + ", 100%, 50%)";
             context.fillRect(i * SPACING, canvasHeight, BAR_WIDTH, -magnitude);
         }
     }
