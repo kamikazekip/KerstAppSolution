@@ -15,6 +15,9 @@ function KerstAppHome(){
     //Everything sync
     this.RTTStart = null;
     this.connectionLatency = null;
+
+    //Second page
+    this.snowMachine = null;
 }
 
 KerstAppHome.prototype.init = function(){
@@ -35,7 +38,6 @@ KerstAppHome.prototype.init = function(){
         })); 
         this.socket.on('musicBlob', this.proxy(this.onMusicBlobReceived))
     }));
-    this.showSecondPage();
 };
 
 KerstAppHome.prototype.onMusicBlobReceived = function(musicBlob){
@@ -73,8 +75,16 @@ KerstAppHome.prototype.startPlaying = function(){
 }
 
 KerstAppHome.prototype.showSecondPage = function(){
-    $( "#wrapper" ).load( "html/playing.html", function(){
-    });
+    $( "#wrapper" ).load( "html/playing.html", this.proxy(function(){
+        this.snowMachine = new SnowMachine();
+        this.snowMachine.createSnow(150);
+        this.snowMachine.loop();
+
+        window.onresize = this.proxy(function() {
+            this.snowMachine.width = this.snowMachine.ctx.canvas.width = document.body.offsetWidth,
+            this.snowMachine.height = this.snowMachine.ctx.canvas.height = document.body.offsetHeight;
+        });
+    }));
 }
 
 KerstAppHome.prototype.queueBlob = function(blob){

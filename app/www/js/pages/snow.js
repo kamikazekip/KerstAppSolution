@@ -1,18 +1,13 @@
 function SnowMachine(){
-  this.canvas = document.getElementById('snow'),
-  this.ctx = canvas.getContext('2d'),
-  this.width = ctx.canvas.width = document.body.offsetWidth,
-  this.height = ctx.canvas.height = document.body.offsetHeight,
+  this.canvas    = document.getElementById('snow'),
+  this.ctx       = this.canvas.getContext('2d'),
+  this.width     = this.ctx.canvas.width = document.body.offsetWidth,
+  this.height    = this.ctx.canvas.height = document.body.offsetHeight,
   this.animFrame = window.requestAnimationFrame ||
-                window.mozRequestAnimationFrame ||
-                window.webkitRequestAnimationFrame ||
-                window.msRequestAnimationFrame,
+                   window.mozRequestAnimationFrame ||
+                   window.webkitRequestAnimationFrame ||
+                   window.msRequestAnimationFrame,
   this.snowflakes = [];
-
-  window.onresize = function() {
-    width = ctx.canvas.width = document.body.offsetWidth,
-      height = ctx.canvas.height = document.body.offsetHeight;
-  }
 }
 
 SnowMachine.prototype.update = function() {
@@ -24,7 +19,7 @@ SnowMachine.prototype.update = function() {
 
 SnowMachine.prototype.createSnow = function(count) {
   for (var i = 0; i < count; i++) {
-    this.snowflakes[i] = new Snow();
+    this.snowflakes[i] = new Snow(this);
   }
 }
 
@@ -38,35 +33,33 @@ SnowMachine.prototype.draw = function() {
 SnowMachine.prototype.loop = function() {
   this.draw();
   this.update();
-  this.animFrame(loop);
+  this.animFrame.call(window, $.proxy(this.loop, this));
 }
 
-createSnow(150);
-loop();
-
-function Snow() {
-  this.x      = this.random(0, width);
-  this.y      = this.random(-height, 0);
-  this.radius = this.random(0.5, 3.0);
-  this.speed  = this.random(1, 3);
-  this.wind   = this.random(-0.5, 3.0);
+function Snow(snowMachine) {
+  this.snowMachine = snowMachine;
+  this.x           = this.random(0, this.snowMachine.width);
+  this.y           = this.random(-this.snowMachine.height, 0);
+  this.radius      = this.random(0.5, 3.0);
+  this.speed       = this.random(1, 3);
+  this.wind        = this.random(-0.5, 3.0);
 }
 
 Snow.prototype.draw = function() {
-  ctx.beginPath();
-  ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
-  ctx.fillStyle = '#fff';
-  ctx.fill();
-  ctx.closePath();
+  this.snowMachine.ctx.beginPath();
+  this.snowMachine.ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
+  this.snowMachine.ctx.fillStyle = '#fff';
+  this.snowMachine.ctx.fill();
+  this.snowMachine.ctx.closePath();
 }
 
 Snow.prototype.update = function() {
   this.y += this.speed;
   this.x += this.wind;
 
-  if (this.y > ctx.canvas.height) {
+  if (this.y > this.snowMachine.ctx.canvas.height) {
     this.y = 0;
-    this.x = this.random(0, width);
+    this.x = this.random(0, this.snowMachine.width);
   }
 }
 
