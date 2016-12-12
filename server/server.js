@@ -32,7 +32,8 @@ console.log("Listening for socket connections on port " + port);
 io.on('connection', function (socket) {
     console.log("Connection made!");
     socket.on('musicBlob', function(musicBlob){
-    	musicBlob.msFromEndToServer = new Date().getTime() - musicBlob.endTime;
+        musicBlob.serverTimeStamp = new Date().getTime();
+        musicBlob.msFromEndToServer = musicBlob.serverTimeStamp - musicBlob.endTime;
         socket.broadcast.emit('musicBlob', musicBlob);
     });
 });
