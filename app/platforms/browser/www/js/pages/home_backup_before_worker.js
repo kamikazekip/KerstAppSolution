@@ -6,9 +6,6 @@ function KerstAppHome(){
     this.bufferingNeeded = true;
     this.totalClock = null;
     this.delayInMS = null;
-    this.dateOfServer = new ServerDate();
-    this.differenceInClock = this.dateOfServer - new Date();
-    this.precision = this.dateOfServer.getPrecision();
 
     // Everything audio
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -18,13 +15,16 @@ function KerstAppHome(){
     //Everything sync
     this.RTTStart = null;
     this.connectionLatency = null;
+
+    //Second page
+    this.snowMachine = null;
 }
 
 KerstAppHome.prototype.init = function(){
     var address = 'http://192.168.2.120:2017';
     console.log("Connecting to: " + address);
     this.socket = io.connect(address);
-    this.RTTStart = new Date();
+    this.RTTStart = new Date(); 
     this.socket.on('connect', this.proxy(function(){
         this.connectionLatency = new Date() - this.RTTStart;
         this.tripDuration = this.connectionLatency / 2;
@@ -42,12 +42,11 @@ KerstAppHome.prototype.init = function(){
 
 KerstAppHome.prototype.onMusicBlobReceived = function(musicBlob){
     musicBlob.audioTimeOnArrival = this.audioCtx.currentTime;
-    this.audioCtx.decodeAudioData(musicBlob.blob).then(this.proxy(function(audioBuffer) {
+    this.audioCtx.decodeAudioData(musicBlob.blob, this.proxy(function(audioBuffer) {
         var source = this.audioCtx.createBufferSource();
         source.buffer = audioBuffer;
         source.connect(this.audioCtx.destination);
         var processDelayInMS = musicBlob.msFromEndToServer - this.tripDuration;   
-        console.log(this.audioCtx.currentTime + " + " + (musicBlob.delayInMS / 1000) + " - " +  (processDelayInMS / 1000) + " precision: " + this.connectionLatency);
         var playTime = this.audioCtx.currentTime + (musicBlob.delayInMS / 1000) - (processDelayInMS / 1000) - audioBuffer.duration;
         var blob = { source: source, duration: audioBuffer.duration, playTime: playTime };
 
@@ -58,6 +57,7 @@ KerstAppHome.prototype.onMusicBlobReceived = function(musicBlob){
         }
 
         if(this.blobBuffer.length == 3 && this.bufferingNeeded == true){
+            console.log("START PLAYING: ");
             this.bufferingNeeded = false;
             this.startPlaying();
         }
@@ -68,15 +68,19 @@ KerstAppHome.prototype.startPlaying = function(){
     this.bufferingNeeded = false;
     var firstBlob = this.blobBuffer[0];
     this.totalClock = firstBlob.playTime;
-    console.log(this.audioCtx.currentTime, this.totalClock);
-
     for(var x = 0; x < this.blobBuffer.length; x++){
         this.queueBlob(this.blobBuffer[x]);
     }
+    this.showSecondPage();
+}
+
+KerstAppHome.prototype.showSecondPage = function(){
+    $( "#wrapper" ).load( "html/playing.html", this.proxy(function(){
+        
+    }));
 }
 
 KerstAppHome.prototype.queueBlob = function(blob){
-    console.log("totalClock: ", this.totalClock);
     blob.source.start(this.totalClock);
     this.totalClock += blob.duration;
 }

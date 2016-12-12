@@ -1,11 +1,11 @@
 function KerstAppHome(){
     // Everything concerning the stream
     this.socketIsConnected = false;
-    this.socket = null;
     this.blobBuffer = [];
     this.bufferingNeeded = true;
     this.totalClock = null;
     this.delayInMS = null;
+    this.socketworker = null;
 
     // Everything audio
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -13,38 +13,30 @@ function KerstAppHome(){
     this.source = this.audioCtx.createBufferSource();
 
     //Everything sync
-    this.RTTStart = null;
-    this.connectionLatency = null;
+    this.tripDuration = null;
 
     //Second page
-    this.snowMachine = null;
+    this.snowMachine = null; 
 }
 
 KerstAppHome.prototype.init = function(){
-    console.log("HELLO");
-    var address = 'http://10.0.1.63:2017';
-    console.log("Connecting to: " + address);
-    this.socket = io.connect(address);
-    this.RTTStart = new Date();
-    this.socket.on('connect', this.proxy(function(){
-        console.log("HELLO 2");
-        this.connectionLatency = new Date() - this.RTTStart;
-        this.tripDuration = this.connectionLatency / 2;
-        console.log("Connected to socket!");
-        this.socketIsConnected = true;
-
-        this.socket.on('disconnect', this.proxy(function(){
-            console.log("Disconnected from socket!")
-            this.bufferingNeeded = true;
-            this.socketIsConnected = false;
-        })); 
-        this.socket.on('musicBlob', this.proxy(this.onMusicBlobReceived))
-    }));
-    console.log("HELLO 3");
+    this.socketworker = new Worker("js/worker/socketworker.js");
+    this.socketworker.onmessage = this.proxy(function(e){
+        switch(e.data.command){
+            case "socketDisconnected":
+                this.bufferingNeeded = true;
+                break;
+            case "socketConnected":
+                this.tripDuration = e.data.tripDuration
+                break;
+            case "musicBlob":
+                this.proxy(this.onMusicBlobReceived(e.data.blob));
+                break; 
+        }
+    });
 };
 
 KerstAppHome.prototype.onMusicBlobReceived = function(musicBlob){
-    console.log("HELLO 4");
     musicBlob.audioTimeOnArrival = this.audioCtx.currentTime;
     this.audioCtx.decodeAudioData(musicBlob.blob, this.proxy(function(audioBuffer) {
         var source = this.audioCtx.createBufferSource();
@@ -61,11 +53,11 @@ KerstAppHome.prototype.onMusicBlobReceived = function(musicBlob){
         }
 
         if(this.blobBuffer.length == 3 && this.bufferingNeeded == true){
-            console.log("START PLAYING: ");
             this.bufferingNeeded = false;
             this.startPlaying();
         }
     }));
+    
 }
 
 KerstAppHome.prototype.startPlaying = function(){
@@ -80,14 +72,7 @@ KerstAppHome.prototype.startPlaying = function(){
 
 KerstAppHome.prototype.showSecondPage = function(){
     $( "#wrapper" ).load( "html/playing.html", this.proxy(function(){
-        this.snowMachine = new SnowMachine();
-        this.snowMachine.createSnow(150);
-        this.snowMachine.loop();
-
-        window.onresize = this.proxy(function() {
-            this.snowMachine.width = this.snowMachine.ctx.canvas.width = document.body.offsetWidth,
-            this.snowMachine.height = this.snowMachine.ctx.canvas.height = document.body.offsetHeight;
-        });
+        
     }));
 }
 

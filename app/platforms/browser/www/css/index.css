@@ -2,6 +2,7 @@ body,
 html {
   height: 100%;
   width: 100%;
+  background-color: #111;
 }
 
 @font-face {
@@ -35,10 +36,6 @@ html {
 }
 
 .playing {
-	background-color: #000;
-}
-
-.playing, .playing img {
 	position: fixed;
 	top: 0px;
 	left: 0px;
@@ -46,6 +43,20 @@ html {
 	height: 100%;
 	padding: 0;
 	margin: 0; 
+	white-space: nowrap;
+    text-align: center;
+}
+
+.playing img {
+    vertical-align: middle;
+    width: 30%;
+    height: auto;
+}
+
+.playing .helper {
+	display: inline-block;
+    height: 100%;
+    vertical-align: middle;
 }
 
 .snow {
