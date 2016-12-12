@@ -21,11 +21,13 @@ function KerstAppHome(){
 }
 
 KerstAppHome.prototype.init = function(){
-    var address = 'http://192.168.2.120:2017';
+    console.log("HELLO");
+    var address = 'http://10.0.1.63:2017';
     console.log("Connecting to: " + address);
     this.socket = io.connect(address);
     this.RTTStart = new Date();
     this.socket.on('connect', this.proxy(function(){
+        console.log("HELLO 2");
         this.connectionLatency = new Date() - this.RTTStart;
         this.tripDuration = this.connectionLatency / 2;
         console.log("Connected to socket!");
@@ -38,9 +40,11 @@ KerstAppHome.prototype.init = function(){
         })); 
         this.socket.on('musicBlob', this.proxy(this.onMusicBlobReceived))
     }));
+    console.log("HELLO 3");
 };
 
 KerstAppHome.prototype.onMusicBlobReceived = function(musicBlob){
+    console.log("HELLO 4");
     musicBlob.audioTimeOnArrival = this.audioCtx.currentTime;
     this.audioCtx.decodeAudioData(musicBlob.blob, this.proxy(function(audioBuffer) {
         var source = this.audioCtx.createBufferSource();
