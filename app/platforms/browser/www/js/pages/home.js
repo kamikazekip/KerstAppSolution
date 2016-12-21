@@ -17,6 +17,22 @@ function KerstAppHome(){
 
     //Second page
     this.snowMachine = null; 
+
+    window.addEventListener('touchstart', this.proxy(function() {
+        // create empty buffer
+        var buffer = this.audioCtx.createBuffer(1, 1, 22050);
+        var source = this.audioCtx.createBufferSource();
+        source.buffer = buffer;
+
+        // connect to output (your speakers)
+        source.connect(this.audioCtx.destination);
+        var func = source.noteOn || $.noop;
+
+        // play the file
+        func(0);
+        $(".pulse-button").removeClass("opacityZero").addClass("opacityZero");
+    }, false));
+    $(window).trigger('touchstart');
 }
 
 KerstAppHome.prototype.init = function(){
@@ -27,6 +43,7 @@ KerstAppHome.prototype.init = function(){
                 this.bufferingNeeded = true;
                 break;
             case "socketConnected":
+            alert("SOCKETCONNECTED");
                 this.tripDuration = e.data.tripDuration
                 break;
             case "musicBlob":

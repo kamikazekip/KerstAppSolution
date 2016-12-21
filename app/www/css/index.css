@@ -35,7 +35,7 @@ html {
 	margin: 0; 
 }
 
-.playing {
+.playing, .pulseWrapper {
 	position: fixed;
 	top: 0px;
 	left: 0px;
@@ -47,13 +47,13 @@ html {
     text-align: center;
 }
 
-.playing img {
+.playing img, .pulseWrapper img {
     vertical-align: middle;
     width: 30%;
     height: auto;
 }
 
-.playing .helper {
+.playing .helper, .pulseWrapper .helper {
 	display: inline-block;
     height: 100%;
     vertical-align: middle;
@@ -61,7 +61,77 @@ html {
 
 .snow {
   height: 100%;
-  position: absolute;
+  position: fixed;
   width: 100%;
-  z-index: 999;
+  z-index: 1;
+}
+
+/* Pulse */
+
+.container {
+  width: 200px;
+  height: 100%;
+  margin: 0 auto 0;
+  -webkit-perspective: 1000;
+  -webkit-backface-visibility: hidden;
+  background: #fff;
+}
+
+.pulse-button {
+  position: relative;
+  top: 50%;
+  left: 50%;
+  margin-left: -150px;
+  margin-top: -150px;
+  display: block;
+  width: 300px;
+  height: 300px;
+  font-size: 40px;
+  font-family: 'Trebuchet MS', sans-serif;
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 100px;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  background: crimson;
+  line-height: 300px;
+  cursor: pointer;
+  -webkit-box-shadow: 0px 0px 0px 0px rgba(255, 255, 255, 0.5);
+  -moz-box-shadow:    0px 0px 0px 0px rgba(255, 255, 255, 0.5);
+  box-shadow:         0px 0px 0px 0px rgba(255, 255, 255, 0.5);
+  -webkit-animation: pulse 2.5s infinite;
+  -webkit-transition: 	opacity 2.5s ease-in-out;
+  -moz-transition: 		opacity 2.5s ease-in-out;
+  -ms-transition: 		opacity 2.5s ease-in-out;
+  -o-transition: 		opacity 2.5s ease-in-out;
+  transition: 			opacity 2.5s ease-in-out;
+}
+
+.opacityZero {
+	opacity: 0;
+}
+
+@-webkit-keyframes pulse {
+  0% {
+  	-ms-transform: 		scale(.8); /* IE 9 */
+    -webkit-transform: 	scale(.8); /* Safari */
+    transform: 			scale(.8); /* Browsers without retardation */
+  }
+  70% {
+  	-ms-transform: 		scale(1); /* IE 9 */
+    -webkit-transform: 	scale(1); /* Safari */
+    transform: 			scale(1); /* Browsers without retardation */
+    -webkit-box-shadow: 0px 0px 0px 50px rgba(255, 255, 255, 0);
+    -moz-box-shadow:    0px 0px 0px 50px rgba(255, 255, 255, 0);
+    box-shadow:         0px 0px 0px 50px rgba(255, 255, 255, 0);
+  }
+    100% {
+    -ms-transform: 		scale(.8); /* IE 9 */
+    -webkit-transform: 	scale(.8); /* Safari */
+    transform: 			scale(.8); /* Browsers without retardation */
+    -webkit-box-shadow: 0px 0px 0px 0px rgba(255, 255, 255, 0);
+    -moz-box-shadow:    0px 0px 0px 0px rgba(255, 255, 255, 0);
+    box-shadow:         0px 0px 0px 0px rgba(255, 255, 255, 0);
+  }
 }

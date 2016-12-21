@@ -10,7 +10,6 @@ var connections = 0;
 var s = this;
 socket.on("connect", function(e){
     tripDuration = (new Date() - RTTStart) / 2;
-    console.log("Connected to socket!");
     s.postMessage({command: "socketConnected", tripDuration: tripDuration});
 
     socket.on('disconnect', function(){

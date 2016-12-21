@@ -1,4 +1,5 @@
 document.addEventListener("deviceready", function(){
+	alert("READY");
     $( "#wrapper" ).load( "html/home.html", function(){
         var kerstAppHome = new KerstAppHome();
         kerstAppHome.init();
