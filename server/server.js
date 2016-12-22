@@ -29,4 +29,8 @@ io.on('connection', function (socket) {
         musicBlob.msFromEndToServer = musicBlob.serverTimeStamp - musicBlob.endTime;
         socket.broadcast.emit('musicBlob', musicBlob);
     });
+    socket.on('calcTripTime', function(musicBlob){
+        var tt = (new Date().getTime() - musicBlob.serverTimeStamp) / 2
+        socket.emit('tripTime', tt);
+    });
 });
