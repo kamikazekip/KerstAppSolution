@@ -10,7 +10,9 @@ function KerstAppHome(){
     // Everything audio
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
     this.audioCtx = new AudioContext();
-    this.source = this.audioCtx.createBufferSource();
+    this.gainNode = this.audioCtx.createGain();
+    this.gainNode.connect(this.audioCtx.destination);
+    this.gainNode.gain.value = 0;
 
     //Everything sync
     this.tripDuration = null;
@@ -19,6 +21,7 @@ function KerstAppHome(){
     this.snowMachine = null; 
 
     window.addEventListener('touchstart', this.proxy(function() {
+        this.gainNode.gain.value = 1;
         // create empty buffer
         var buffer = this.audioCtx.createBuffer(1, 1, 22050);
         var source = this.audioCtx.createBufferSource();
@@ -43,7 +46,6 @@ KerstAppHome.prototype.init = function(){
                 this.bufferingNeeded = true;
                 break;
             case "socketConnected":
-            alert("SOCKETCONNECTED");
                 this.tripDuration = e.data.tripDuration
                 break;
             case "musicBlob":
@@ -58,7 +60,7 @@ KerstAppHome.prototype.onMusicBlobReceived = function(musicBlob){
     this.audioCtx.decodeAudioData(musicBlob.blob, this.proxy(function(audioBuffer) {
         var source = this.audioCtx.createBufferSource();
         source.buffer = audioBuffer;
-        source.connect(this.audioCtx.destination);
+        source.connect(this.gainNode);
         var processDelayInMS = musicBlob.msFromEndToServer - this.tripDuration;   
         var playTime = this.audioCtx.currentTime + (musicBlob.delayInMS / 1000) - (processDelayInMS / 1000) - audioBuffer.duration;
         var blob = { source: source, duration: audioBuffer.duration, playTime: playTime };
