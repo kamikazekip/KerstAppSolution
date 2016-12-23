@@ -29,10 +29,8 @@ function KerstAppHome(){
 
         // connect to output (your speakers)
         source.connect(this.audioCtx.destination);
-        var func = source.noteOn || $.noop;
-
-        // play the file
-        func(0);
+        source.noteOn = source.noteOn || $.noop;
+        source.noteOn(0);
         $(".pulse-button").removeClass("opacityZero").addClass("opacityZero");
     }, false));
     $(window).trigger('touchstart');
