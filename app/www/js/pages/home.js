@@ -33,7 +33,6 @@ function KerstAppHome(){
         source.noteOn(0);
         $(".pulse-button").removeClass("opacityZero").addClass("opacityZero");
     }, false));
-    $(window).trigger('touchstart');
 }
 
 KerstAppHome.prototype.init = function(){
