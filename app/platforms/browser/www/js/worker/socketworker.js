@@ -1,6 +1,6 @@
 importScripts('socket.io-1.4.5.js');
 
-var address = 'http://192.168.2.120:2017';
+var address = 'http://192.168.2.143:2017';
 console.log("Connecting to: " + address);
 var socket = io(address);
 
